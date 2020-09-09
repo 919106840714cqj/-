@@ -1,0 +1,113 @@
+#include<iostream>
+#include<time.h>
+#include<stdlib.h>
+#include<algorithm>
+#include<iomanip>
+using namespace std;
+static char p[13]={'3','4','5','6','7','8','9','T','J','Q','K','A','2'};  
+bool cmp(int x,int y)
+{
+	return x%13>y%13;//按牌的点数降序排列
+}
+int main()
+{
+	srand(time(0));
+	int i,j,k;
+	int k1=0;
+	int k2=0;
+	int k3=0;
+	int k4=0;
+	int rh[27]={0};
+	int rp[27]={0};
+	int bp[27]={0};
+	int bk[27]={0};
+	int poker[108];//存0~103表示的数字牌，104~107表示4张王牌 
+	int player[4][27];//存4个玩家的牌
+	//player[0]代表玩家 1的牌，以此类推 
+	for(i=0;i<108;i++)
+	{
+		poker[i]=i;
+	}
+//从poker数组中，每次随机取出1张牌，按顺序发给4个玩家
+	for(i=0;i<108;i++)
+	{
+		int idx = rand()%(108-i); //随机取一张牌
+		player[i%4][i/4]=poker[idx];
+//取得牌依次为第1个人第1张，第2个人第1张，第3个人第1张，第4个人第1张
+		poker[idx]=poker[107-i];//取完牌把最后一个牌移到前面避免随机数重复 
+//1个人第2张，2个人第2张，3个人第2张 ………………
+	}
+	for(i=0;i<4;i++)
+	{
+		cout<<"玩家"<<i+1<<"的牌为:"<<endl; //玩家数目从1开始 	
+		for(j=0;j<27;j++)
+		{
+			if(player[i][j]==106||player[i][j]==107) cout<<"大王"<<endl;
+		}
+		for(j=0;j<28;j++)
+		{
+			if(player[i][j]==104||player[i][j]==105) cout<<"小王"<<endl;
+		}
+		sort(player[i],player[i]+27,cmp);
+		for(j=0;j<27;j++)
+		{
+			if(player[i][j]<=103)
+			{
+				int type=player[i][j]/13;//花色
+				int point=player[i][j]%13;//点数
+				if(type==0||type==4)
+				{
+					rh[k1]=point;
+					k1++;
+				}
+				if(type==1||type==5)
+				{
+					rp[k2]=point;
+					k2++;
+				}
+				if(type==2||type==6) 
+				{
+					bp[k3]=point;
+					k3++;
+				}
+				if(type==3||type==7)
+				{
+					bk[k4]=point;
+					k4++;
+				}
+			}
+		}
+
+		cout<<"红心：";
+		if(k1==0) cout<<"无";
+		for(k=0;k<k1;k++)
+		{
+			cout<<p[rh[k]]<<' ';
+		}cout<<endl;
+		
+		cout<<"红桃："; 
+		if(k2==0) cout<<"无";
+		for(k=0;k<k2;k++)
+		{
+			cout<<p[rp[k]]<<' ';
+		}cout<<endl;
+		
+		cout<<"黑桃：";
+		if(k3==0) cout<<"无";
+		for(k=0;k<k3;k++)
+		{
+			cout<<p[bp[k]]<<' ';
+		}cout<<endl;
+		
+		cout<<"方块：";
+		if(k4==0) cout<<"无";
+		for(k=0;k<k4;k++)
+		{
+			cout<<p[bk[k]]<<' ';
+		}cout<<endl;
+		
+		k1=k2=k3=k4=0;
+		cout<<endl;	
+	}
+	return 0;
+}
